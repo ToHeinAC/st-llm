@@ -39,9 +39,9 @@ def chunk_text(text, max_length=1024):
     
 # Define helper funktion to wrap the junks together
 @st.cache_data(show_spinner=False, ttl = 3600)
-def generate_summary(text_chunks):
+def generate_summary(_text_chunks):
     summaries = []
-    for chunk in text_chunks:
+    for chunk in _text_chunks:
         summary_ids = model.generate(chunk, max_length=1200, min_length=150, length_penalty=2.0, num_beams=4, early_stopping=False)
         summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
         summaries.append(summary)
@@ -50,7 +50,7 @@ def generate_summary(text_chunks):
 st.title('LLM PDF Summarizer (EN) :owl:')
 
 # File uploader allows user to add their own PDF
-uploaded = st.file_uploader("Choose a PDF file", type="pdf")
+upload = st.file_uploader("Choose a PDF file", type="pdf")
 if upload is None:
     st.info("Upload a PDF document", icon = 'ℹ️')
     st.stop()
@@ -58,7 +58,7 @@ if upload is not None:
     st.success('File uploaded successfully!')
     
 if upload is not None:
-    text = extract_text_and_tables(uploaded_file)
+    text = extract_text_and_tables(upload)
     chunks = chunk_text(text)
     summary = generate_summary(chunks)
     st.header("PDF Summary")
