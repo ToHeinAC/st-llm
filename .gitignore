@@ -1,7 +1,6 @@
 # .gitignore
-stvenv
-__pycache__
+venv/
 *.ipynb
 *.db
-crassets.xlsx
+
 

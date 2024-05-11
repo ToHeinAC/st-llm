@@ -1,5 +1,6 @@
-pdfplumber==0.11.0
-streamlit==1.23.1
-streamlit-option-menu==0.3.6
-transformers==4.40.2
+pdfplumber
+streamlit
+streamlit-option-menu
+torch
+transformers
 
