@@ -3,12 +3,6 @@ import pdfplumber
 #from transformers import pipeline
 from transformers import BartTokenizer, BartForConditionalGeneration
 
-model_name = 'facebook/bart-large-cnn'
-tokenizer = BartTokenizer.from_pretrained(model_name)
-model = BartForConditionalGeneration.from_pretrained(model_name)
-
-#summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-
 # Define helper function to extract text and tables information
 def extract_text_and_tables(pdf_path):
     all_text = ""
@@ -47,22 +41,33 @@ def generate_summary(_text_chunks):
         summaries.append(summary)
     return " ".join(summaries)
 
-st.title('LLM PDF Summarizer (EN) :owl:')
 
-# File uploader allows user to add their own PDF
-upload = st.file_uploader("Choose a PDF file", type="pdf")
-if upload is None:
-    st.info("Upload a PDF document", icon = 'ℹ️')
-    st.stop()
-if upload is not None:
-    st.success('File uploaded successfully!')
+def main():
+    model_name = 'facebook/bart-large-cnn'
+    tokenizer = BartTokenizer.from_pretrained(model_name)
+    model = BartForConditionalGeneration.from_pretrained(model_name)
+
+    #summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
     
-if upload is not None:
-    text = extract_text_and_tables(upload)
-    chunks = chunk_text(text)
-    summary = generate_summary(chunks)
-    st.header("PDF Summary")
-    with st.expander("Summary"):
-        st.write(summary)
-        #summary=summarizer(text, max_length=600, min_length=300, do_sample=False)
-        #st.write('Summary:', summary[0]['summary_text'])
+    st.title('LLM PDF Summarizer (EN) :owl:')
+
+    # File uploader allows user to add their own PDF
+    upload = st.file_uploader("Choose a PDF file", type="pdf")
+    if upload is None:
+        st.info("Upload a PDF document", icon = 'ℹ️')
+        st.stop()
+    if upload is not None:
+        st.success('File uploaded successfully!')
+        
+    if upload is not None:
+        text = extract_text_and_tables(upload)
+        chunks = chunk_text(text)
+        summary = generate_summary(chunks)
+        st.header("PDF Summary")
+        with st.expander("Summary"):
+            st.write(summary)
+            #summary=summarizer(text, max_length=600, min_length=300, do_sample=False)
+            #st.write('Summary:', summary[0]['summary_text'])
+
+if __name__ == "__main__":
+    main()
