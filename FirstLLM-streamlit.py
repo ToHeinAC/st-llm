@@ -1,7 +1,11 @@
 import streamlit as st
 import pdfplumber
 #from transformers import pipeline
-from transformers import BartTokenizer, BartForConditionalGeneration
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+
+model_name = 'facebook/bart-large-cnn'
+tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
+model = AutoModelForSeq2SeqLM.from_pretrained("facebook/bart-large-cnn")
 
 # Define helper function to extract text and tables information
 def extract_text_and_tables(pdf_path):
@@ -36,17 +40,13 @@ def chunk_text(text, max_length=1024):
 def generate_summary(_text_chunks):
     summaries = []
     for chunk in _text_chunks:
-        summary_ids = model.generate(chunk, max_length=1200, min_length=150, length_penalty=2.0, num_beams=4, early_stopping=False)
+        summary_ids = model.generate(chunk, max_length=600, min_length=200, length_penalty=2.0, num_beams=4, early_stopping=False)
         summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
         summaries.append(summary)
     return " ".join(summaries)
 
 
 def main():
-    model_name = 'facebook/bart-large-cnn'
-    tokenizer = BartTokenizer.from_pretrained(model_name)
-    model = BartForConditionalGeneration.from_pretrained(model_name)
-
     #summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
     
     st.title('LLM PDF Summarizer (EN) :owl:')
